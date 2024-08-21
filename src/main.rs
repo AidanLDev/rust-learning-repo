@@ -1,18 +1,39 @@
-use std::io;
+use std::{cmp::Ordering, io};
 use rand::Rng;
 
 fn main() {
     let correct = rand::thread_rng().gen_range(1..=10);
-    println!("correct value: {correct}\n");
-    println!("Hey, guess a number:\n");
+    // println!("correct value: {correct}\n");
+    println!("Hey, guess a number between 1 - 10:\n");
     
-    let mut num = String::new();
+    
+    loop {
+        let mut num_guessed = String::new();
 
-    io::stdin()
-        .read_line(&mut num)
-        .expect("Error reading input");
+        io::stdin()
+            .read_line(&mut num_guessed)
+            .expect("Error reading input");
 
-    println!("You guessed: {}", num.trim())
+        
+        let num_guessed: u32 = match num_guessed.trim().parse() {
+            Ok(parsed_num) => parsed_num,
+            Err(e) => {
+                println!("Error with parse, try again. {e}");
+                continue;
+            }
+        };
+
+
+        match num_guessed.cmp(&correct) {
+            Ordering::Greater => println!("You guessed too high!"),
+            Ordering::Less => println!("You guessed too low..."),
+            Ordering::Equal => {
+                println!("You guessed the correct number!");
+                break;
+            }
+        };
+    }
+    
 }
 
 /*
